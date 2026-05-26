@@ -1,0 +1,8 @@
+# Inference API (chạy: npm run inference)
+torch>=2.0
+torchvision>=0.15
+opencv-python-headless>=4.8
+numpy>=1.24
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9

@@ -1,0 +1,10 @@
+# Auto workflow: CT/MRI classifier (.keras) + MRI/CT specialist models.
+# Use Python 3.12 for this file because TensorFlow does not publish wheels for Python 3.14.
+torch>=2.0
+torchvision>=0.15
+opencv-python-headless>=4.8
+numpy>=1.24
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+tensorflow>=2.16

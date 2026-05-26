@@ -1,0 +1,9 @@
+.venv312/
+venv/
+env/
+__pycache__/
+*.pyc
+
+artifacts/*.pth
+artifacts/*.h5
+artifacts/*.keras

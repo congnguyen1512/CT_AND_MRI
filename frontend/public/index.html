@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DACN3 - Bang dieu khien phan loai anh y te</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js" defer></script>
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <header class="site-header">
+      <div class="header-top">
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <div>
+            <h1>DACN3 - Y te &amp; hoc may</h1>
+            <p class="tagline">
+              Dashboard xem artifact huan luyen, du doan anh batch, va luu lich su ket qua.
+            </p>
+          </div>
+        </div>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Doi giao dien">
+          Dark mode
+        </button>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Chon tap du lieu">
+        <button type="button" class="tab is-active" role="tab" aria-selected="true" data-panel="modality">
+          Tu dong
+        </button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-panel="mri">
+          MRI - U nao
+        </button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-panel="strokeCt">
+          CT - Dot quy
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      <div id="status" class="status" role="status"></div>
+
+      <section id="panel-modality" class="panel is-active" data-panel="modality">
+        <div class="panel-inner" id="content-modality"></div>
+      </section>
+      <section id="panel-mri" class="panel" data-panel="mri">
+        <div class="panel-inner" id="content-mri"></div>
+      </section>
+      <section id="panel-strokeCt" class="panel" data-panel="strokeCt">
+        <div class="panel-inner" id="content-strokeCt"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        Terminal 1: <code>pip install -r requirements.txt</code> roi <code>npm run inference</code>.
+        Terminal 2: <code>npm start</code>. Checkpoint <code>.pth</code> nam trong <code>artifacts/</code>.
+      </p>
+    </footer>
+  </body>
+</html>
