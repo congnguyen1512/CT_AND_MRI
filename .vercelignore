@@ -1,0 +1,16 @@
+# Ignore large model files and environments on Vercel deployment
+.venv312/
+venv/
+env/
+__pycache__/
+*.pyc
+
+artifacts/*.pth
+artifacts/*.h5
+artifacts/*.keras
+model/*.keras
+
+notebooks/
+*.ipynb
+*.log
+.git

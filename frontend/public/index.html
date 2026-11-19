@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DACN3 - Bang dieu khien phan loai anh y te</title>
+    <title>Hệ thống Nhận diện &amp; Chẩn đoán Ảnh Y tế (CT &amp; MRI)</title>
+    <meta name="description" content="Dashboard trực quan hóa mô hình Deep Learning nhận diện ảnh CT và MRI, phát hiện u não và đột quỵ với độ chính xác cao." />
+    <meta name="theme-color" content="#2c7a7b" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,49 +22,48 @@
     <header class="site-header">
       <div class="header-top">
         <div class="brand">
-          <span class="brand-mark"></span>
+          <span class="brand-mark" aria-hidden="true"></span>
           <div>
-            <h1>DACN3 - Y te &amp; hoc may</h1>
+            <h1>NHẬN DIỆN &amp; PHÂN LOẠI ẢNH CT / MRI</h1>
             <p class="tagline">
-              Dashboard xem artifact huan luyen, du doan anh batch, va luu lich su ket qua.
+              Hệ thống chẩn đoán y tế AI: Phân loại tự động MRI/CT, phát hiện U não (AlexNet) và Đột quỵ não (ResNet18).
             </p>
           </div>
         </div>
-        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Doi giao dien">
-          Dark mode
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Đổi giao diện sáng/tối">
+          🌙 Giao diện tối
         </button>
       </div>
-      <nav class="tabs" role="tablist" aria-label="Chon tap du lieu">
+      <nav class="tabs" role="tablist" aria-label="Chọn tập dữ liệu và chế độ">
         <button type="button" class="tab is-active" role="tab" aria-selected="true" data-panel="modality">
-          Tu dong
+          🔍 Tự động nhận diện (CT / MRI)
         </button>
         <button type="button" class="tab" role="tab" aria-selected="false" data-panel="mri">
-          MRI - U nao
+          🧠 MRI - U não
         </button>
         <button type="button" class="tab" role="tab" aria-selected="false" data-panel="strokeCt">
-          CT - Dot quy
+          🩻 CT - Đột quỵ
         </button>
       </nav>
     </header>
 
     <main>
-      <div id="status" class="status" role="status"></div>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
 
-      <section id="panel-modality" class="panel is-active" data-panel="modality">
+      <section id="panel-modality" class="panel is-active" data-panel="modality" role="tabpanel">
         <div class="panel-inner" id="content-modality"></div>
       </section>
-      <section id="panel-mri" class="panel" data-panel="mri">
+      <section id="panel-mri" class="panel" data-panel="mri" role="tabpanel" hidden>
         <div class="panel-inner" id="content-mri"></div>
       </section>
-      <section id="panel-strokeCt" class="panel" data-panel="strokeCt">
+      <section id="panel-strokeCt" class="panel" data-panel="strokeCt" role="tabpanel" hidden>
         <div class="panel-inner" id="content-strokeCt"></div>
       </section>
     </main>
 
     <footer class="site-footer">
       <p>
-        Terminal 1: <code>pip install -r requirements.txt</code> roi <code>npm run inference</code>.
-        Terminal 2: <code>npm start</code>. Checkpoint <code>.pth</code> nam trong <code>artifacts/</code>.
+        <strong>Đồ án chuyên ngành 3 (DACN3)</strong> &bull; Hướng dẫn suy luận: Chạy <code>python backend/inference_server.py</code> cho Inference backend hoặc kết nối qua <code>INFERENCE_URL</code>.
       </p>
     </footer>
   </body>

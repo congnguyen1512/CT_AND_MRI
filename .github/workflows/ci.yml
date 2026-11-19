@@ -1,0 +1,67 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify JSON artifacts integrity
+        run: |
+          node -e "
+            const fs = require('fs');
+            const files = [
+              'artifacts/brain_mri_labels.json',
+              'artifacts/brain_mri_classification_report.json',
+              'artifacts/brain_mri_training_history.json',
+              'artifacts/brain_stroke_ct_labels.json',
+              'artifacts/brain_stroke_ct_classification_report.json',
+              'artifacts/brain_stroke_ct_training_history.json',
+              'model/ct_mri_labels.json',
+              'model/ct_mri_training_history.json'
+            ];
+            files.forEach(f => {
+              if (!fs.existsSync(f)) throw new Error('Missing file: ' + f);
+              JSON.parse(fs.readFileSync(f, 'utf8'));
+            });
+            console.log('All JSON artifacts validated successfully.');
+          "
+
+      - name: Run automated test suite
+        run: npm test
+
+  deploy-preview:
+    name: Vercel Deploy Check
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Notify CI Status
+        run: |
+          echo "CI tests passed! Ready for Vercel deployment."
+          echo "Vercel automatically deploys every push to main when GitHub repo is connected."

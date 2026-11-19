@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node backend/server.js",
     "dev": "node backend/server.js",
+    "test": "node --test test/*.test.js",
     "inference": "python backend/inference_server.py"
   },
   "engines": {

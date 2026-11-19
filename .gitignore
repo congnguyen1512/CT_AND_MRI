@@ -1,9 +1,19 @@
+# Dependencies
+node_modules/
 .venv312/
 venv/
 env/
+
+# Python cache
 __pycache__/
 *.pyc
 
+# Heavy ML Models (Large files > 40MB)
 artifacts/*.pth
 artifacts/*.h5
 artifacts/*.keras
+
+# Vercel & IDE
+.vercel/
+.DS_Store
+*.log

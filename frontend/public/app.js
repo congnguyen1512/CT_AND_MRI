@@ -8,22 +8,22 @@
   const themeToggle = document.getElementById('theme-toggle');
   const datasetConfig = {
     mri: {
-      title: 'MRI - U nao',
+      title: 'MRI - U não',
       route: 'mri',
-      predictHeading: 'Du doan anh MRI',
-      buttonText: 'Chay du doan MRI',
+      predictHeading: 'Dự đoán ảnh MRI (AlexNet)',
+      buttonText: 'Chạy dự đoán MRI',
     },
     strokeCt: {
-      title: 'CT - Dot quy',
+      title: 'CT - Đột quỵ',
       route: 'stroke',
-      predictHeading: 'Du doan anh CT',
-      buttonText: 'Chay du doan CT',
+      predictHeading: 'Dự đoán ảnh CT (ResNet18)',
+      buttonText: 'Chạy dự đoán CT',
     },
     modality: {
-      title: 'Tu dong MRI / CT -> chan doan',
+      title: 'Tự động MRI / CT -> chẩn đoán',
       route: 'auto',
-      predictHeading: 'Tu dong nhan dien va phan loai',
-      buttonText: 'Chay tu dong',
+      predictHeading: 'Tự động nhận diện (MobileNetV2) & chẩn đoán',
+      buttonText: 'Chạy tự động',
     },
   };
   const panels = {
@@ -65,14 +65,14 @@
   function initTheme() {
     const saved = localStorage.getItem(THEME_KEY) || 'light';
     document.documentElement.dataset.theme = saved;
-    themeToggle.textContent = saved === 'dark' ? 'Light mode' : 'Dark mode';
+    themeToggle.textContent = saved === 'dark' ? '☀️ Giao diện sáng' : '🌙 Giao diện tối';
   }
 
   function toggleTheme() {
     const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
     localStorage.setItem(THEME_KEY, next);
-    themeToggle.textContent = next === 'dark' ? 'Light mode' : 'Dark mode';
+    themeToggle.textContent = next === 'dark' ? '☀️ Giao diện sáng' : '🌙 Giao diện tối';
     Object.keys(chartRefs).forEach((key) => {
       chartRefs[key].forEach((chart) => chart.update());
     });
@@ -122,7 +122,7 @@
       const res = await fetch('/api/inference-health');
       inferenceState = await res.json();
     } catch {
-      inferenceState = { reachable: false, hint: 'Khong kiem tra duoc inference API.' };
+      inferenceState = { reachable: false, hint: 'Không kiểm tra được Inference API.' };
     }
     return inferenceState;
   }
@@ -131,18 +131,18 @@
     const state = inferenceState;
     if (!state) return '';
     if (!state.reachable) {
-      return state.hint || 'Inference API chua chay. Hay mo terminal va chay npm run inference.';
+      return state.hint || 'Inference API chưa chạy. Hãy mở terminal và chạy: npm run inference';
     }
 
     const issues = [];
     if ((route === 'auto' || route === 'mri') && !state.mri?.ready) {
-      issues.push('Model MRI chua san sang.');
+      issues.push('Model MRI (.pth) chưa sẵn sàng.');
     }
     if ((route === 'auto' || route === 'stroke') && !state.stroke_ct?.ready) {
-      issues.push('Model CT chua san sang.');
+      issues.push('Model CT (.pth) chưa sẵn sàng.');
     }
     if ((route === 'auto' || route === 'modality') && !state.modality?.ready) {
-      issues.push(state.modality?.error || 'Model nhan dien CT/MRI chua san sang.');
+      issues.push(state.modality?.error || 'Model nhận diện CT/MRI (.keras) chưa sẵn sàng.');
     }
     return issues.join(' ');
   }
@@ -173,7 +173,7 @@
           <div>
             <h2 class="section-title">${escapeHtml(config.predictHeading)}</h2>
             <p class="predict-hint">
-              Keo tha hoac chon nhieu anh JPEG / PNG / WebP. Toi da 20 anh, moi anh toi da 15MB.
+              Kéo thả hoặc chọn nhiều ảnh JPEG / PNG / WebP. Tối đa 20 ảnh, mỗi ảnh tối đa 15MB.
             </p>
           </div>
           <div class="report-actions">
@@ -184,21 +184,21 @@
         <form class="predict-form" data-route="${route}">
           <label class="drop-zone" tabindex="0">
             <input type="file" name="images" accept="image/jpeg,image/png,image/webp" multiple required />
-            <span class="drop-title">Keo tha anh vao day</span>
-            <span class="drop-sub">hoac bam de chon file</span>
+            <span class="drop-title">Kéo thả ảnh vào đây</span>
+            <span class="drop-sub">hoặc bấm để chọn file</span>
           </label>
           <div class="file-list" data-role="file-list">Chua chon anh.</div>
           <div class="predict-actions">
             <button type="submit" class="btn-predict">${escapeHtml(config.buttonText)}</button>
-            <button type="button" class="btn-secondary" data-action="clear-files">Xoa file</button>
+            <button type="button" class="btn-secondary" data-action="clear-files">Xóa file</button>
           </div>
         </form>
         <div class="predict-result" hidden></div>
       </div>
       <div class="history-zone">
         <div class="section-head">
-          <h2 class="section-title">Lich su du doan</h2>
-          <button type="button" class="btn-secondary" data-action="clear-history">Xoa lich su</button>
+          <h2 class="section-title">Lịch sử dự đoán</h2>
+          <button type="button" class="btn-secondary" data-action="clear-history">Xóa lịch sử</button>
         </div>
         <div class="history-list" data-role="history-list"></div>
       </div>
@@ -222,7 +222,7 @@
           <strong>${escapeHtml(second?.[0] || '-')}</strong>
           <span>${formatPct(second?.[1])}</span>
         </div>
-        <p>${unclear ? 'Model chua that ro rang, nen xem lai top 2.' : 'Do tin cay top 1 dang on dinh.'}</p>
+        <p>${unclear ? 'Model chưa rõ ràng, nên xem lại top 2.' : 'Độ tin cậy top 1 đang ổn định.'}</p>
       </div>
     `;
   }
@@ -232,7 +232,7 @@
       return `
         <article class="predict-out is-error">
           <h3>${escapeHtml(item.filename)}</h3>
-          <p class="err">${escapeHtml(item.error || 'Du doan that bai.')}</p>
+          <p class="err">${escapeHtml(item.error || 'Dự đoán thất bại.')}</p>
         </article>
       `;
     }
@@ -264,31 +264,31 @@
             <h3>${escapeHtml(item.filename)}</h3>
             ${
               modality
-                ? `<p><strong>Loai anh:</strong> ${escapeHtml(modality.label)} (${formatPct(Number(modality.confidence))})</p>
-                   <p><strong>Model duoc goi:</strong> ${escapeHtml(data.selectedTitle || '-')}</p>`
+                ? `<p><strong>Loại ảnh:</strong> ${escapeHtml(modality.label)} (${formatPct(Number(modality.confidence))})</p>
+                   <p><strong>Model được gọi:</strong> ${escapeHtml(data.selectedTitle || '-')}</p>`
                 : ''
             }
-            <p><strong>Nhan du doan:</strong> ${escapeHtml(diagnosis.label)} (${formatPct(Number(diagnosis.confidence))})</p>
+            <p><strong>Nhận dự đoán:</strong> ${escapeHtml(diagnosis.label)} (${formatPct(Number(diagnosis.confidence))})</p>
             <p class="sub">Checkpoint: ${escapeHtml(diagnosis.checkpoint || '-')} - ${escapeHtml(diagnosis.device || '')}</p>
           </div>
         </div>
         ${renderTop2(top)}
         <div class="predict-images ${heatmapSrc || overlaySrc ? '' : 'is-single'}">
           <div class="image-panel">
-            <strong>Anh goc</strong>
-            <img src="${escapeHtml(item.originalSrc || '')}" alt="Anh goc" />
+            <strong>Ảnh gốc</strong>
+            <img src="${escapeHtml(item.originalSrc || '')}" alt="Ảnh gốc" />
           </div>
           ${heatmapPanel}
           ${overlayPanel}
         </div>
         <table class="report mini">
-          <thead><tr><th>Lop chan doan</th><th class="num">Xac suat</th></tr></thead>
+          <thead><tr><th>Lớp chẩn đoán</th><th class="num">Xác suất</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
         ${
           modalityRows
             ? `<table class="report mini modality-table">
-                <thead><tr><th>Loai anh</th><th class="num">Xac suat</th></tr></thead>
+                <thead><tr><th>Loại ảnh</th><th class="num">Xác suất</th></tr></thead>
                 <tbody>${modalityRows}</tbody>
               </table>`
             : ''
@@ -335,7 +335,7 @@
     const dataset = datasetTitle(key);
     const rows = history.filter((item) => item.dataset === dataset).slice(0, 12);
     if (!rows.length) {
-      list.innerHTML = '<p class="muted">Chua co lich su cho tab nay.</p>';
+      list.innerHTML = '<p class="muted">Chưa có lịch sử cho tab này.</p>';
       return;
     }
     list.innerHTML = rows
@@ -348,7 +348,7 @@
           </div>
           <div>
             <b>${escapeHtml(item.modalityLabel ? `${item.modalityLabel} -> ${item.label}` : item.label)}</b>
-            <span>${formatPct(item.confidence)}${item.unclear ? ' - can xem lai top 2' : ''}</span>
+            <span>${formatPct(item.confidence)}${item.unclear ? ' - cần xem lại top 2' : ''}</span>
           </div>
         </div>
       `
@@ -362,7 +362,7 @@
     if (!list) return;
     const files = selectedFiles[key];
     if (!files.length) {
-      list.textContent = 'Chua chon anh.';
+      list.textContent = 'Chưa chọn ảnh.';
       return;
     }
     list.innerHTML = files
@@ -420,7 +420,7 @@
       if (!files.length) return;
 
       resultEl.hidden = false;
-      resultEl.innerHTML = '<p class="muted">Dang xu ly batch...</p>';
+      resultEl.innerHTML = '<p class="muted">Đang xử lý dự đoán batch...</p>';
       const btn = form.querySelector('.btn-predict');
       btn.disabled = true;
       try {
@@ -492,7 +492,7 @@
   function exportCsv(key) {
     const rows = exportRows(key);
     if (!rows.length) {
-      setStatus('Chua co ket qua de xuat CSV.', 'warn');
+      setStatus('Chưa có kết quả để xuất CSV.', 'warn');
       return;
     }
     const headers = [
@@ -526,12 +526,12 @@
   function exportPdf(key) {
     const rows = exportRows(key);
     if (!rows.length) {
-      setStatus('Chua co ket qua de xuat PDF.', 'warn');
+      setStatus('Chưa có kết quả để xuất PDF.', 'warn');
       return;
     }
     const doc = window.open('', '_blank');
     if (!doc) {
-      setStatus('Trinh duyet chan popup. Hay cho phep popup de in PDF.', 'warn');
+      setStatus('Trình duyệt chặn popup.Hãy cho phép popup để in PDF.', 'warn');
       return;
     }
     doc.document.write(`
@@ -587,17 +587,17 @@
     return `
       <div class="cards">
         <div class="card">
-          <h3>Kien truc</h3>
+          <h3>Kiến Trúc</h3>
           <div class="value">${escapeHtml(labels.model_name || '-')}</div>
-          <div class="sub">Mo hinh dung khi xuat artifact</div>
+          <div class="sub">Mô hình được sử dụng</div>
         </div>
         <div class="card">
-          <h3>Kich thuoc anh</h3>
+          <h3>Kích thước ảnh</h3>
           <div class="value">${escapeHtml(size)}</div>
-          <div class="sub">Dau vao sau tien xu ly</div>
+          <div class="sub">Đầu vào sau tiền xử lý</div>
         </div>
         <div class="card">
-          <h3>So lop</h3>
+          <h3>Số lớp</h3>
           <div class="value">${names.length}</div>
           <div class="sub class-pills">${pills}</div>
         </div>
@@ -635,13 +635,13 @@
       })
       .join('');
     return `
-      <h2 class="section-title">Bao cao phan loai</h2>
+      <h2 class="section-title">Báo cáo phân loại</h2>
       <div class="table-wrap">
-        <p class="sub report-accuracy">Do chinh xac tong: <strong>${acc}</strong></p>
+        <p class="sub report-accuracy">Độ chính xác tổng: <strong>${acc}</strong></p>
         <table class="report">
           <thead>
             <tr>
-              <th>Lop</th>
+              <th>Lớp</th>
               <th class="num">Precision</th>
               <th class="num">Recall</th>
               <th class="num">F1</th>
@@ -659,11 +659,11 @@
     return `
       <div class="grid-2 chart-grid">
         <div class="chart-box">
-          <h3 class="section-title chart-title">Huan luyen - Loss &amp; Accuracy</h3>
+          <h3 class="section-title chart-title">Huấn luyện - Loss &amp; Accuracy</h3>
           <canvas id="${chartRootId}-history" height="220"></canvas>
         </div>
         ${hasReport ? `<div class="chart-box">
-          <h3 class="section-title chart-title">F1-score theo lop</h3>
+          <h3 class="section-title chart-title">F1-score theo lớp</h3>
           <canvas id="${chartRootId}-f1" height="220"></canvas>
         </div>` : ''}
       </div>
@@ -780,7 +780,7 @@
   themeToggle.addEventListener('click', toggleTheme);
 
   async function load() {
-    setStatus('Dang tai du lieu artifact...');
+    setStatus('Đang tải dữ liệu artifact...');
     try {
       const res = await fetch('/api/datasets');
       if (!res.ok) {
@@ -798,30 +798,30 @@
       try {
         const ihj = await refreshInferenceState();
         if (!ihj.reachable) {
-          infHint = ' Inference API chua chay - mo terminal va chay npm run inference.';
+          infHint = ' | Inference API chưa chạy (chạy npm run inference để dự đoán ảnh).';
           infType = 'warn';
         } else {
           const parts = [];
-          if (!ihj.mri?.ready) parts.push('MRI thieu file .pth');
-          if (!ihj.stroke_ct?.ready) parts.push('CT thieu file .pth');
+          if (!ihj.mri?.ready) parts.push('MRI thiếu file .pth');
+          if (!ihj.stroke_ct?.ready) parts.push('CT thiếu file .pth');
           if (!ihj.modality?.ready) {
-            parts.push(ihj.modality?.tensorflowReady === false ? 'MRI/CT thieu TensorFlow' : 'MRI/CT thieu model .keras');
+            parts.push(ihj.modality?.tensorflowReady === false ? 'MRI/CT thiếu TensorFlow' : 'MRI/CT thiếu model .keras');
           }
           if (parts.length) {
-            infHint = ' ' + parts.join('; ') + '.';
+            infHint = ' | ' + parts.join('; ') + '.';
             infType = 'warn';
           }
         }
       } catch {
-        infHint = ' Khong kiem tra duoc inference API.';
+        infHint = ' | Không kiểm tra được inference API.';
         infType = 'warn';
       }
-      setStatus('Da dong bo artifact tu server.' + infHint, infType);
+      setStatus('Đã đồng bộ artifact từ máy chủ thành công!' + infHint, infType);
     } catch (e) {
       console.error(e);
-      setStatus('Loi: ' + e.message, 'error');
+      setStatus('Lỗi: ' + e.message, 'error');
       contents.mri.innerHTML =
-        '<p>Khong tai duoc API. Kiem tra da chay <code>npm start</code> va co thu muc <code>artifacts/</code>.</p>';
+        '<p>Không tải được API. Kiểm tra đã chạy <code>npm start</code> và có thư mục <code>artifacts/</code>.</p>';
     }
   }
 

@@ -3,14 +3,25 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs/promises');
+const fsSync = require('fs');
 
 const app = express();
 const BASE_PORT = Number(process.env.PORT) || 3000;
 const PORT_TRY_LIMIT = 30;
 const BACKEND_ROOT = __dirname;
-const PROJECT_ROOT = path.resolve(BACKEND_ROOT, '..');
+const PROJECT_ROOT = fsSync.existsSync(path.resolve(BACKEND_ROOT, '..', 'artifacts'))
+  ? path.resolve(BACKEND_ROOT, '..')
+  : process.cwd();
 const FRONTEND_ROOT = path.join(PROJECT_ROOT, 'frontend', 'public');
 const INFERENCE_URL = (process.env.INFERENCE_URL || 'http://127.0.0.1:5050').replace(/\/$/, '');
+
+// Enable CORS and basic security headers
+app.use((_req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -31,21 +42,21 @@ const batchUpload = upload.array('images', 20);
 const ARTIFACTS = {
   mri: {
     id: 'mri',
-    title: 'MRI - U nao',
+    title: 'MRI - U não',
     labels: 'artifacts/brain_mri_labels.json',
     report: 'artifacts/brain_mri_classification_report.json',
     history: 'artifacts/brain_mri_training_history.json',
   },
   strokeCt: {
     id: 'strokeCt',
-    title: 'CT - Dot quy nao',
+    title: 'CT - Đột quỵ não',
     labels: 'artifacts/brain_stroke_ct_labels.json',
     report: 'artifacts/brain_stroke_ct_classification_report.json',
     history: 'artifacts/brain_stroke_ct_training_history.json',
   },
   modality: {
     id: 'modality',
-    title: 'Tu dong MRI / CT -> chan doan',
+    title: 'Tự động MRI / CT -> chẩn đoán',
     labels: 'model/ct_mri_labels.json',
     history: 'model/ct_mri_training_history.json',
     model: 'model/ct_mri_classifier.keras',
@@ -346,4 +357,9 @@ function listenWithPortFallback(startPort, attemptsLeft) {
   });
 }
 
-listenWithPortFallback(BASE_PORT, PORT_TRY_LIMIT);
+if (require.main === module) {
+  listenWithPortFallback(BASE_PORT, PORT_TRY_LIMIT);
+}
+
+module.exports = app;
+
