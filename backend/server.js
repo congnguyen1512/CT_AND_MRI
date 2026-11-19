@@ -70,7 +70,22 @@ const PREDICT_ROUTES = {
   auto: '/predict/auto',
 };
 
+// Static JSON bundle cache for instantaneous response and 100% reliable Vercel packaging
+const STATIC_ARTIFACTS = {
+  'artifacts/brain_mri_labels.json': require('../artifacts/brain_mri_labels.json'),
+  'artifacts/brain_mri_classification_report.json': require('../artifacts/brain_mri_classification_report.json'),
+  'artifacts/brain_mri_training_history.json': require('../artifacts/brain_mri_training_history.json'),
+  'artifacts/brain_stroke_ct_labels.json': require('../artifacts/brain_stroke_ct_labels.json'),
+  'artifacts/brain_stroke_ct_classification_report.json': require('../artifacts/brain_stroke_ct_classification_report.json'),
+  'artifacts/brain_stroke_ct_training_history.json': require('../artifacts/brain_stroke_ct_training_history.json'),
+  'model/ct_mri_labels.json': require('../model/ct_mri_labels.json'),
+  'model/ct_mri_training_history.json': require('../model/ct_mri_training_history.json'),
+};
+
 async function readJson(relPath) {
+  if (STATIC_ARTIFACTS[relPath]) {
+    return JSON.parse(JSON.stringify(STATIC_ARTIFACTS[relPath]));
+  }
   const full = path.join(PROJECT_ROOT, relPath);
   const raw = await fs.readFile(full, 'utf8');
   return JSON.parse(raw);
